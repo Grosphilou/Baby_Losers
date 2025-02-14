@@ -1,12 +1,12 @@
 // Configuration Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDeWrX-K2uvOWFseZppB_Oj8Z8i6Rtvf18",
-  authDomain: "baby-losers.firebaseapp.com",
-  projectId: "baby-losers",
-  storageBucket: "baby-losers.firebasestorage.app",
-  messagingSenderId: "360433135484",
-  appId: "1:360433135484:web:31179231cf004e08613ef9",
-  measurementId: "G-5YLLE79NT3"
+    apiKey: "AIzaSyDeWrX-K2uvOWFseZppB_Oj8Z8i6Rtvf18",
+    authDomain: "baby-losers.firebaseapp.com",
+    projectId: "baby-losers",
+    storageBucket: "baby-losers.firebasestorage.app",
+    messagingSenderId: "360433135484",
+    appId: "1:360433135484:web:31179231cf004e08613ef9",
+    measurementId: "G-5YLLE79NT3"
 };
 
 // Initialiser Firebase
@@ -21,10 +21,12 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
+            console.log("Login successful!");
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('main-section').style.display = 'block';
         })
         .catch((error) => {
+            console.error("Error logging in: ", error.message);
             alert("Error logging in: " + error.message);
         });
 });
@@ -33,13 +35,19 @@ document.getElementById('create-account').addEventListener('click', function() {
     const email = prompt("Enter your email:");
     const password = prompt("Enter your password:");
 
-    auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            alert("Account created successfully!");
-        })
-        .catch((error) => {
-            alert("Error creating account: " + error.message);
-        });
+    if (email && password) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                console.log("Account created successfully!");
+                alert("Account created successfully!");
+            })
+            .catch((error) => {
+                console.error("Error creating account: ", error.message);
+                alert("Error creating account: " + error.message);
+            });
+    } else {
+        console.error("Email or password is empty.");
+    }
 });
 
 document.getElementById('new-lose').addEventListener('click', function() {
@@ -59,10 +67,12 @@ document.getElementById('lose-form').addEventListener('submit', function(event) 
 
     db.collection('matches').add(matchData)
         .then(() => {
+            console.log("Match result submitted successfully!");
             alert("Match result submitted successfully!");
             document.getElementById('new-lose-form').style.display = 'none';
         })
         .catch((error) => {
+            console.error("Error submitting match result: ", error.message);
             alert("Error submitting match result: " + error.message);
         });
 });
@@ -87,6 +97,7 @@ document.getElementById('hall-of-lose').addEventListener('click', function() {
 document.getElementById('stats-of-lose').addEventListener('click', function() {
     db.collection('matches').get().then((querySnapshot) => {
         let totalMatches = querySnapshot.size;
+        console.log(`Total matches played: ${totalMatches}`);
         alert(`Total matches played: ${totalMatches}`);
     });
 });
@@ -106,6 +117,8 @@ function displayTopThree(losers, winners) {
     const topLosers = losersSorted.slice(0, 3);
     const topWinners = winnersSorted.slice(0, 3);
 
+    console.log(`Top Losers: ${topLosers.map(l => `${l[0]}: ${l[1]}`).join(', ')}`);
+    console.log(`Top Winners: ${topWinners.map(w => `${w[0]}: ${w[1]}`).join(', ')}`);
     alert(`Top Losers: ${topLosers.map(l => `${l[0]}: ${l[1]}`).join(', ')}`);
     alert(`Top Winners: ${topWinners.map(w => `${w[0]}: ${w[1]}`).join(', ')}`);
 }
