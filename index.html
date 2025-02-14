@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baby Losers</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
 </head>
 <body>
     <div class="container">
@@ -12,7 +16,7 @@
         <div id="login-section">
             <h2>Login</h2>
             <form id="login-form">
-                <input type="text" id="username" placeholder="Username" required>
+                <input type="email" id="email" placeholder="Email" required>
                 <input type="password" id="password" placeholder="Password" required>
                 <button type="submit">Login</button>
                 <button type="button" id="create-account">Create Account</button>
@@ -22,6 +26,17 @@
             <button id="new-lose">New Lose</button>
             <button id="hall-of-lose">Hall of Lose</button>
             <button id="stats-of-lose">Stats of Lose</button>
+        </div>
+        <div id="new-lose-form" style="display: none;">
+            <h2>New Lose</h2>
+            <form id="lose-form">
+                <input type="date" id="match-date" placeholder="Match Date" required>
+                <input type="text" id="winner1" placeholder="Winner 1" required>
+                <input type="text" id="winner2" placeholder="Winner 2" required>
+                <input type="text" id="loser1" placeholder="Loser 1" required>
+                <input type="text" id="loser2" placeholder="Loser 2" required>
+                <button type="submit">Submit</button>
+            </form>
         </div>
     </div>
     <script src="script.js"></script>
