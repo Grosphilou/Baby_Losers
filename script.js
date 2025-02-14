@@ -195,11 +195,30 @@ function loadStats() {
             return;
         }
 
-        let statsContent = '<table><thead><tr><th>Date</th><th>Winner1</th><th>Winner2</th><th>Loser1</th><th>Loser2</th></tr></thead><tbody>';
+        const stats = {};
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            statsContent += `<tr><td>${data.date}</td><td>${data.winner1}</td><td>${data.winner2}</td><td>${data.loser1}</td><td>${data.loser2}</td></tr>`;
+            if (!stats[data.winner1]) stats[data.winner1] = { wins: 0, loses: 0, total: 0 };
+            if (!stats[data.winner2]) stats[data.winner2] = { wins: 0, loses: 0, total: 0 };
+            if (!stats[data.loser1]) stats[data.loser1] = { wins: 0, loses: 0, total: 0 };
+            if (!stats[data.loser2]) stats[data.loser2] = { wins: 0, loses: 0, total: 0 };
+
+            stats[data.winner1].wins += 1;
+            stats[data.winner2].wins += 1;
+            stats[data.loser1].loses += 1;
+            stats[data.loser2].loses += 1;
+            stats[data.winner1].total += 1;
+            stats[data.winner2].total += 1;
+            stats[data.loser1].total += 1;
+            stats[data.loser2].total += 1;
         });
+
+        let statsContent = '<table><thead><tr><th>Pseudo</th><th>Wins</th><th>Loses</th><th>Most Lost To</th><th>Most Won Against</th><th>Win %</th><th>Lose %</th></tr></thead><tbody>';
+        for (const [pseudo, data] of Object.entries(stats)) {
+            const winPercentage = ((data.wins / data.total) * 100).toFixed(2);
+            const losePercentage = ((data.loses / data.total) * 100).toFixed(2);
+            statsContent += `<tr><td>${pseudo}</td><td>${data.wins}</td><td>${data.loses}</td><td>${data.mostLostTo || 'N/A'}</td><td>${data.mostWonAgainst || 'N/A'}</td><td>${winPercentage}%</td><td>${losePercentage}%</td></tr>`;
+        }
         statsContent += '</tbody></table>';
 
         document.getElementById('stats-content').innerHTML = statsContent;
