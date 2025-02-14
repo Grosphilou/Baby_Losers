@@ -4,49 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baby Losers</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Ajoutez vos liens CSS ici -->
 </head>
 <body>
-
-    <div id="app">
-        <h1>Baby Losers</h1>
-        
-        <!-- Formulaire de nouvelle partie -->
-        <button id="new-loose-btn">Nouvelle Partie</button>
-        
-        <div id="form-new-loose" class="form-container">
-            <h2>Ajouter une nouvelle loose</h2>
-            
-            <!-- Formulaire avec la date et la liste des pseudos -->
-            <form id="loose-form">
-                <label for="date">Date :</label>
-                <input type="date" id="date" name="date" required>
-                
-                <label for="winner1">Gagnant 1 :</label>
-                <select id="winner1" name="winner1" required>
-                    <option value="">Sélectionnez un gagnant</option>
-                </select>
-
-                <label for="winner2">Gagnant 2 :</label>
-                <select id="winner2" name="winner2" required>
-                    <option value="">Sélectionnez un gagnant</option>
-                </select>
-
-                <label for="loser1">Perdant 1 :</label>
-                <select id="loser1" name="loser1" required>
-                    <option value="">Sélectionnez un perdant</option>
-                </select>
-
-                <label for="loser2">Perdant 2 :</label>
-                <select id="loser2" name="loser2" required>
-                    <option value="">Sélectionnez un perdant</option>
-                </select>
-
-                <button type="submit">Soumettre</button>
-            </form>
-        </div>
+    <div id="main-page">
+        <button id="create-account">Créer un compte</button>
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Mot de passe" required>
+            <button type="submit">Se connecter</button>
+        </form>
+        <button id="new-loose-btn">New Lose</button>
     </div>
 
+    <div id="form-new-loose" style="display: none;">
+        <form id="loose-form">
+            <input type="date" id="date" required>
+            <input type="text" id="winner1" placeholder="Gagnant 1" required>
+            <input type="text" id="winner2" placeholder="Gagnant 2" required>
+            <input type="text" id="loser1" placeholder="Perdant 1" required>
+            <input type="text" id="loser2" placeholder="Perdant 2" required>
+            <button type="submit">Ajouter</button>
+        </form>
+    </div>
+
+    <!-- Ajoutez vos scripts JS ici -->
     <script src="script.js"></script>
 </body>
 </html>
