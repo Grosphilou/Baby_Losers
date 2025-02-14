@@ -14,13 +14,19 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// Fonction pour valider l'adresse e-mail
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 // Créer un compte avec pseudo, email et mot de passe
 document.getElementById('create-account').addEventListener('click', function() {
     const pseudo = document.getElementById('pseudo').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    if (pseudo && email && password) {
+    if (pseudo && isValidEmail(email) && password) {
         auth.createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
@@ -47,7 +53,7 @@ document.getElementById('create-account').addEventListener('click', function() {
                 alert("Erreur lors de la création du compte : " + error.message);
             });
     } else {
-        console.error("Pseudo, email ou mot de passe est vide.");
+        alert("Veuillez entrer un pseudo, une adresse e-mail valide et un mot de passe.");
     }
 });
 
@@ -57,19 +63,23 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            console.log("Connecté avec succès avec l'email :", user.email);
-            alert("Connecté avec succès avec l'email : " + user.email);
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('main-section').style.display = 'block';
-            document.getElementById('welcome-message').textContent = user.email; // Ou pseudo si disponible
-        })
-        .catch((error) => {
-            console.error("Erreur lors de la connexion : ", error.message);
-            alert("Erreur lors de la connexion : " + error.message);
-        });
+    if (isValidEmail(email)) {
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log("Connecté avec succès avec l'email :", user.email);
+                alert("Connecté avec succès avec l'email : " + user.email);
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('main-section').style.display = 'block';
+                document.getElementById('welcome-message').textContent = user.email; // Ou pseudo si disponible
+            })
+            .catch((error) => {
+                console.error("Erreur lors de la connexion : ", error.message);
+                alert("Erreur lors de la connexion : " + error.message);
+            });
+    } else {
+        alert("Veuillez entrer une adresse e-mail valide.");
+    }
 });
 
 // Afficher le formulaire de nouvelle loose
