@@ -135,6 +135,11 @@ document.getElementById('logout').addEventListener('click', function() {
 // Fonction pour charger les pseudos des utilisateurs
 function loadUserPseudos() {
     db.collection('users').get().then((querySnapshot) => {
+        if (querySnapshot.empty) {
+            console.error("Aucun utilisateur trouvé.");
+            return;
+        }
+
         const winner1Select = document.getElementById('winner1');
         const winner2Select = document.getElementById('winner2');
         const loser1Select = document.getElementById('loser1');
@@ -147,19 +152,57 @@ function loadUserPseudos() {
         loser2Select.innerHTML = '<option value="" disabled selected>Sélectionnez Loser2</option>';
 
         querySnapshot.forEach((doc) => {
-            const pseudo = doc.data().pseudo;
-            console.log("Pseudo chargé :", pseudo); // Log pour vérifier les pseudos chargés
-            const option = document.createElement('option');
-            option.value = pseudo;
-            option.textContent = pseudo;
+            const data = doc.data();
+            if (data.pseudo) {
+                const pseudo = data.pseudo;
+                console.log("Pseudo chargé :", pseudo); // Log pour vérifier les pseudos chargés
+                const option = document.createElement('option');
+                option.value = pseudo;
+                option.textContent = pseudo;
 
-            // Ajouter l'option à chaque liste de sélection
-            winner1Select.appendChild(option.cloneNode(true));
-            winner2Select.appendChild(option.cloneNode(true));
-            loser1Select.appendChild(option.cloneNode(true));
-            loser2Select.appendChild(option.cloneNode(true));
+                // Ajouter l'option à chaque liste de sélection
+                winner1Select.appendChild(option.cloneNode(true));
+                winner2Select.appendChild(option.cloneNode(true));
+                loser1Select.appendChild(option.cloneNode(true));
+                loser2Select.appendChild(option.cloneNode(true));
+            } else {
+                console.warn("Document sans pseudo trouvé :", doc.id);
+            }
         });
     }).catch((error) => {
         console.error("Erreur lors de la récupération des pseudos : ", error.message);
+    });
+}
+
+// Afficher les statistiques
+document.getElementById('stats-of-lose').addEventListener('click', function() {
+    document.getElementById('stats-section').style.display = 'block';
+    loadStats();
+});
+
+// Fermer les statistiques
+document.getElementById('close-stats').addEventListener('click', function() {
+    document.getElementById('stats-section').style.display = 'none';
+});
+
+// Fonction pour charger les statistiques
+function loadStats() {
+    db.collection('looses').get().then((querySnapshot) => {
+        if (querySnapshot.empty) {
+            console.error("Aucune partie trouvée.");
+            document.getElementById('stats-content').textContent = "Aucune partie trouvée.";
+            return;
+        }
+
+        let statsContent = '<ul>';
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            statsContent += `<li>Date: ${data.date}, Winner1: ${data.winner1}, Winner2: ${data.winner2}, Loser1: ${data.loser1}, Loser2: ${data.loser2}</li>`;
+        });
+        statsContent += '</ul>';
+
+        document.getElementById('stats-content').innerHTML = statsContent;
+    }).catch((error) => {
+        console.error("Erreur lors de la récupération des statistiques : ", error.message);
     });
 }
