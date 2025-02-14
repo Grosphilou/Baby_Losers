@@ -148,6 +148,7 @@ function loadUserPseudos() {
 
         querySnapshot.forEach((doc) => {
             const pseudo = doc.data().pseudo;
+            console.log("Pseudo chargé :", pseudo); // Log pour vérifier les pseudos chargés
             const option = document.createElement('option');
             option.value = pseudo;
             option.textContent = pseudo;
