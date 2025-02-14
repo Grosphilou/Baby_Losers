@@ -195,12 +195,12 @@ function loadStats() {
             return;
         }
 
-        let statsContent = '<ul>';
+        let statsContent = '<table><thead><tr><th>Date</th><th>Winner1</th><th>Winner2</th><th>Loser1</th><th>Loser2</th></tr></thead><tbody>';
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            statsContent += `<li>Date: ${data.date}, Winner1: ${data.winner1}, Winner2: ${data.winner2}, Loser1: ${data.loser1}, Loser2: ${data.loser2}</li>`;
+            statsContent += `<tr><td>${data.date}</td><td>${data.winner1}</td><td>${data.winner2}</td><td>${data.loser1}</td><td>${data.loser2}</td></tr>`;
         });
-        statsContent += '</ul>';
+        statsContent += '</tbody></table>';
 
         document.getElementById('stats-content').innerHTML = statsContent;
     }).catch((error) => {
@@ -229,6 +229,12 @@ function loadPodium() {
         .where('timestamp', '>=', oneWeekAgo)
         .get()
         .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+                console.error("Aucune partie trouvée pour la semaine.");
+                document.getElementById('podium-weekly').textContent = "Aucune partie trouvée pour la semaine.";
+                return;
+            }
+
             const loserCounts = {};
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
@@ -245,6 +251,12 @@ function loadPodium() {
 
     // Calculer le podium de tous les temps
     db.collection('looses').get().then((querySnapshot) => {
+        if (querySnapshot.empty) {
+            console.error("Aucune partie trouvée pour tous les temps.");
+            document.getElementById('podium-all-time').textContent = "Aucune partie trouvée pour tous les temps.";
+            return;
+        }
+
         const loserCounts = {};
         querySnapshot.forEach((doc) => {
             const data = doc.data();
