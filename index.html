@@ -33,10 +33,22 @@
         <h2>Nouvelle Perte</h2>
         <form id="new-lose-data-form">
             <input type="date" id="match-date" required>
-            <input type="text" id="winner1" placeholder="Winner1" required>
-            <input type="text" id="winner2" placeholder="Winner2" required>
-            <input type="text" id="loser1" placeholder="Loser1" required>
-            <input type="text" id="loser2" placeholder="Loser2" required>
+            <select id="winner1" required>
+                <option value="" disabled selected>Sélectionnez Winner1</option>
+                <!-- Options seront ajoutées dynamiquement ici -->
+            </select>
+            <select id="winner2" required>
+                <option value="" disabled selected>Sélectionnez Winner2</option>
+                <!-- Options seront ajoutées dynamiquement ici -->
+            </select>
+            <select id="loser1" required>
+                <option value="" disabled selected>Sélectionnez Loser1</option>
+                <!-- Options seront ajoutées dynamiquement ici -->
+            </select>
+            <select id="loser2" required>
+                <option value="" disabled selected>Sélectionnez Loser2</option>
+                <!-- Options seront ajoutées dynamiquement ici -->
+            </select>
             <button type="submit">Sauvegarder</button>
         </form>
         <button id="cancel-new-lose">Annuler</button>

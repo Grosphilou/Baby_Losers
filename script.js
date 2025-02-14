@@ -85,6 +85,7 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 // Afficher le formulaire de nouvelle loose
 document.getElementById('new-lose').addEventListener('click', function() {
     document.getElementById('new-lose-form').style.display = 'block';
+    loadUserPseudos();
 });
 
 // Annuler le formulaire de nouvelle loose
@@ -130,3 +131,34 @@ document.getElementById('logout').addEventListener('click', function() {
         alert("Erreur lors de la déconnexion : " + error.message);
     });
 });
+
+// Fonction pour charger les pseudos des utilisateurs
+function loadUserPseudos() {
+    db.collection('users').get().then((querySnapshot) => {
+        const winner1Select = document.getElementById('winner1');
+        const winner2Select = document.getElementById('winner2');
+        const loser1Select = document.getElementById('loser1');
+        const loser2Select = document.getElementById('loser2');
+
+        // Vider les options actuelles
+        winner1Select.innerHTML = '<option value="" disabled selected>Sélectionnez Winner1</option>';
+        winner2Select.innerHTML = '<option value="" disabled selected>Sélectionnez Winner2</option>';
+        loser1Select.innerHTML = '<option value="" disabled selected>Sélectionnez Loser1</option>';
+        loser2Select.innerHTML = '<option value="" disabled selected>Sélectionnez Loser2</option>';
+
+        querySnapshot.forEach((doc) => {
+            const pseudo = doc.data().pseudo;
+            const option = document.createElement('option');
+            option.value = pseudo;
+            option.textContent = pseudo;
+
+            // Ajouter l'option à chaque liste de sélection
+            winner1Select.appendChild(option.cloneNode(true));
+            winner2Select.appendChild(option.cloneNode(true));
+            loser1Select.appendChild(option.cloneNode(true));
+            loser2Select.appendChild(option.cloneNode(true));
+        });
+    }).catch((error) => {
+        console.error("Erreur lors de la récupération des pseudos : ", error.message);
+    });
+}
