@@ -94,3 +94,63 @@ auth.onAuthStateChanged((user) => {
         });
     }
 });
+
+// Charger la liste des pseudos pour le formulaire "New Loose"
+function loadPlayerOptions() {
+    db.collection('users').get().then((querySnapshot) => {
+        const playersList = [];
+        
+        // Parcours des utilisateurs et récupération des pseudos
+        querySnapshot.forEach((doc) => {
+            playersList.push(doc.data().pseudo); // Supposons que chaque utilisateur a un champ "pseudo"
+        });
+
+        // Remplir les listes déroulantes pour les gagnants et les perdants
+        ['winner1', 'winner2', 'loser1', 'loser2'].forEach(selectId => {
+            const selectElement = document.getElementById(selectId);
+            selectElement.innerHTML = '<option value="">Sélectionnez un joueur</option>'; // Reset des options
+            playersList.forEach(player => {
+                const option = document.createElement('option');
+                option.value = player;
+                option.textContent = player;
+                selectElement.appendChild(option);
+            });
+        });
+    }).catch((error) => {
+        console.error("Error loading players: ", error.message);
+        alert("Error loading players: " + error.message);
+    });
+}
+
+// Afficher le formulaire pour enregistrer une nouvelle partie (loose)
+document.getElementById('new-loose-btn').addEventListener('click', function() {
+    document.getElementById('form-new-loose').style.display = 'block'; // Afficher le formulaire
+    loadPlayerOptions(); // Charger les options de joueurs
+});
+
+// Sauvegarder une nouvelle partie (loose) dans Firestore
+document.getElementById('loose-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Empêcher le rechargement de la page
+    
+    const date = document.getElementById('date').value;
+    const winner1 = document.getElementById('winner1').value;
+    const winner2 = document.getElementById('winner2').value;
+    const loser1 = document.getElementById('loser1').value;
+    const loser2 = document.getElementById('loser2').value;
+
+    // Sauvegarder les informations dans Firestore (par exemple dans une collection 'looses')
+    db.collection('looses').add({
+        date: date,
+        winner1: winner1,
+        winner2: winner2,
+        loser1: loser1,
+        loser2: loser2
+    }).then(() => {
+        console.log('Nouvelle partie ajoutée avec succès');
+        // Réinitialiser le formulaire
+        document.getElementById('loose-form').reset();
+        document.getElementById('form-new-loose').style.display = 'none'; // Masquer à nouveau le formulaire
+    }).catch((error) => {
+        console.error("Erreur lors de l'ajout de la nouvelle partie :", error.message);
+    });
+});

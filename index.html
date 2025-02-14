@@ -4,42 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baby Losers</title>
-    <link rel="stylesheet" href="styles.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+
+    <div id="app">
         <h1>Baby Losers</h1>
-        <div id="login-section">
-            <h2>Login</h2>
-            <form id="login-form">
-                <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" required autocomplete="nickname">
-                <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email">
-                <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password">
-                <button type="submit">Login</button>
-                <button type="button" id="create-account">Create Account</button>
-            </form>
-        </div>
-        <div id="main-section" style="display: none;">
-            <button id="new-lose">New Lose</button>
-            <button id="hall-of-lose">Hall of Lose</button>
-            <button id="stats-of-lose">Stats of Lose</button>
-        </div>
-        <div id="new-lose-form" style="display: none;">
-            <h2>New Lose</h2>
-            <form id="lose-form">
-                <input type="date" id="match-date" placeholder="Match Date" required>
-                <input type="text" id="winner1" placeholder="Winner 1" required>
-                <input type="text" id="winner2" placeholder="Winner 2" required>
-                <input type="text" id="loser1" placeholder="Loser 1" required>
-                <input type="text" id="loser2" placeholder="Loser 2" required>
-                <button type="submit">Submit</button>
+        
+        <!-- Formulaire de nouvelle partie -->
+        <button id="new-loose-btn">Nouvelle Partie</button>
+        
+        <div id="form-new-loose" class="form-container">
+            <h2>Ajouter une nouvelle loose</h2>
+            
+            <!-- Formulaire avec la date et la liste des pseudos -->
+            <form id="loose-form">
+                <label for="date">Date :</label>
+                <input type="date" id="date" name="date" required>
+                
+                <label for="winner1">Gagnant 1 :</label>
+                <select id="winner1" name="winner1" required>
+                    <option value="">Sélectionnez un gagnant</option>
+                </select>
+
+                <label for="winner2">Gagnant 2 :</label>
+                <select id="winner2" name="winner2" required>
+                    <option value="">Sélectionnez un gagnant</option>
+                </select>
+
+                <label for="loser1">Perdant 1 :</label>
+                <select id="loser1" name="loser1" required>
+                    <option value="">Sélectionnez un perdant</option>
+                </select>
+
+                <label for="loser2">Perdant 2 :</label>
+                <select id="loser2" name="loser2" required>
+                    <option value="">Sélectionnez un perdant</option>
+                </select>
+
+                <button type="submit">Soumettre</button>
             </form>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
