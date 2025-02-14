@@ -107,7 +107,8 @@ document.getElementById('new-lose-data-form').addEventListener('submit', functio
         winner1: winner1,
         winner2: winner2,
         loser1: loser1,
-        loser2: loser2
+        loser2: loser2,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
         console.log("Nouvelle loose ajoutée avec succès !");
@@ -205,4 +206,65 @@ function loadStats() {
     }).catch((error) => {
         console.error("Erreur lors de la récupération des statistiques : ", error.message);
     });
+}
+
+// Afficher le Hall of Lose
+document.getElementById('hall-of-lose').addEventListener('click', function() {
+    document.getElementById('hall-of-lose-section').style.display = 'block';
+    loadPodium();
+});
+
+// Fermer le Hall of Lose
+document.getElementById('close-hall-of-lose').addEventListener('click', function() {
+    document.getElementById('hall-of-lose-section').style.display = 'none';
+});
+
+// Fonction pour charger le podium
+function loadPodium() {
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    // Calculer le podium de la semaine
+    db.collection('looses')
+        .where('timestamp', '>=', oneWeekAgo)
+        .get()
+        .then((querySnapshot) => {
+            const loserCounts = {};
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.loser1) loserCounts[data.loser1] = (loserCounts[data.loser1] || 0) + 1;
+                if (data.loser2) loserCounts[data.loser2] = (loserCounts[data.loser2] || 0) + 1;
+            });
+
+            const sortedLosers = Object.entries(loserCounts).sort((a, b) => b[1] - a[1]);
+            displayPodium(sortedLosers.slice(0, 3), 'podium-weekly', 'Podium de la semaine');
+        })
+        .catch((error) => {
+            console.error("Erreur lors de la récupération des données de la semaine : ", error.message);
+        });
+
+    // Calculer le podium de tous les temps
+    db.collection('looses').get().then((querySnapshot) => {
+        const loserCounts = {};
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.loser1) loserCounts[data.loser1] = (loserCounts[data.loser1] || 0) + 1;
+            if (data.loser2) loserCounts[data.loser2] = (loserCounts[data.loser2] || 0) + 1;
+        });
+
+        const sortedLosers = Object.entries(loserCounts).sort((a, b) => b[1] - a[1]);
+        displayPodium(sortedLosers.slice(0, 3), 'podium-all-time', 'Podium de tous les temps');
+    }).catch((error) => {
+        console.error("Erreur lors de la récupération des données de tous les temps : ", error.message);
+    });
+}
+
+// Fonction pour afficher le podium
+function displayPodium(losers, elementId, title) {
+    let podiumContent = `<h3>${title}</h3><ol>`;
+    losers.forEach(([loser, count], index) => {
+        podiumContent += `<li>${index + 1}. ${loser} - ${count} pertes</li>`;
+    });
+    podiumContent += '</ol>';
+    document.getElementById(elementId).innerHTML = podiumContent;
 }
