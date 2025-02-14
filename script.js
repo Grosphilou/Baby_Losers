@@ -17,8 +17,8 @@ const db = firebase.firestore();
 // Créer un compte avec pseudo, email et mot de passe
 document.getElementById('create-account').addEventListener('click', function() {
     const pseudo = document.getElementById('pseudo').value;
-    const email = prompt("Entrez votre email :");
-    const password = prompt("Entrez votre mot de passe :");
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
     if (pseudo && email && password) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -54,17 +54,17 @@ document.getElementById('create-account').addEventListener('click', function() {
 // Connexion avec pseudo
 document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    const pseudo = document.getElementById('pseudo').value;
+    const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    auth.signInWithEmailAndPassword(pseudo, password)
+    auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             const user = userCredential.user;
             console.log("Connecté avec succès avec l'email :", user.email);
             alert("Connecté avec succès avec l'email : " + user.email);
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('main-section').style.display = 'block';
-            document.getElementById('welcome-message').textContent = pseudo;
+            document.getElementById('welcome-message').textContent = user.email; // Ou pseudo si disponible
         })
         .catch((error) => {
             console.error("Erreur lors de la connexion : ", error.message);
