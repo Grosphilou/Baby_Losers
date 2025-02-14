@@ -14,111 +14,83 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-document.getElementById('login-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            console.log("Login successful!");
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('main-section').style.display = 'block';
-        })
-        .catch((error) => {
-            console.error("Error logging in: ", error.message);
-            alert("Error logging in: " + error.message);
-        });
-});
-
+// Créer un compte avec pseudo, email et mot de passe
 document.getElementById('create-account').addEventListener('click', function() {
+    const pseudo = prompt("Enter your pseudo:");
     const email = prompt("Enter your email:");
     const password = prompt("Enter your password:");
 
-    if (email && password) {
+    if (pseudo && email && password) {
         auth.createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
-                console.log("Account created successfully!");
-                alert("Account created successfully!");
+                const user = userCredential.user;
+
+                // Sauvegarder le pseudo dans Firestore
+                db.collection('users').doc(user.uid).set({
+                    pseudo: pseudo,
+                    email: email
+                })
+                .then(() => {
+                    console.log("Account created successfully with pseudo!");
+                    alert("Account created successfully with pseudo!");
+                })
+                .catch((error) => {
+                    console.error("Error saving pseudo: ", error.message);
+                    alert("Error saving pseudo: " + error.message);
+                });
             })
             .catch((error) => {
                 console.error("Error creating account: ", error.message);
                 alert("Error creating account: " + error.message);
             });
     } else {
-        console.error("Email or password is empty.");
+        console.error("Pseudo, email or password is empty.");
     }
 });
 
-document.getElementById('new-lose').addEventListener('click', function() {
-    document.getElementById('new-lose-form').style.display = 'block';
-});
-
-document.getElementById('lose-form').addEventListener('submit', function(event) {
+// Connexion avec pseudo
+document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault();
+    const pseudo = document.getElementById('pseudo').value;
 
-    const matchData = {
-        date: document.getElementById('match-date').value,
-        winner1: document.getElementById('winner1').value,
-        winner2: document.getElementById('winner2').value,
-        loser1: document.getElementById('loser1').value,
-        loser2: document.getElementById('loser2').value,
-    };
-
-    db.collection('matches').add(matchData)
-        .then(() => {
-            console.log("Match result submitted successfully!");
-            alert("Match result submitted successfully!");
-            document.getElementById('new-lose-form').style.display = 'none';
+    // Chercher l'utilisateur par pseudo dans Firestore
+    db.collection('users').where("pseudo", "==", pseudo).get()
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0]; // Prendre le premier utilisateur trouvé
+                const userData = userDoc.data();
+                
+                // Connexion avec l'email associé au pseudo
+                auth.signInWithEmailAndPassword(userData.email, document.getElementById('password').value)
+                    .then((userCredential) => {
+                        console.log("Login successful!");
+                        document.getElementById('login-section').style.display = 'none';
+                        document.getElementById('main-section').style.display = 'block';
+                    })
+                    .catch((error) => {
+                        console.error("Error logging in: ", error.message);
+                        alert("Error logging in: " + error.message);
+                    });
+            } else {
+                alert("No user found with this pseudo.");
+            }
         })
         .catch((error) => {
-            console.error("Error submitting match result: ", error.message);
-            alert("Error submitting match result: " + error.message);
+            console.error("Error searching user by pseudo: ", error.message);
+            alert("Error searching user: " + error.message);
         });
 });
 
-document.getElementById('hall-of-lose').addEventListener('click', function() {
-    db.collection('matches').get().then((querySnapshot) => {
-        let losers = {};
-        let winners = {};
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            incrementCount(losers, data.loser1);
-            incrementCount(losers, data.loser2);
-            incrementCount(winners, data.winner1);
-            incrementCount(winners, data.winner2);
+// Afficher le pseudo de l'utilisateur après connexion
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        db.collection('users').doc(user.uid).get().then((doc) => {
+            if (doc.exists) {
+                const userData = doc.data();
+                console.log(`Welcome ${userData.pseudo}!`);
+                // Mettre à jour l'interface avec le pseudo
+                document.getElementById('welcome-message').innerText = `Welcome, ${userData.pseudo}!`;
+            }
         });
-
-        displayTopThree(losers, winners);
-    });
-});
-
-document.getElementById('stats-of-lose').addEventListener('click', function() {
-    db.collection('matches').get().then((querySnapshot) => {
-        let totalMatches = querySnapshot.size;
-        console.log(`Total matches played: ${totalMatches}`);
-        alert(`Total matches played: ${totalMatches}`);
-    });
-});
-
-function incrementCount(obj, key) {
-    if (obj[key]) {
-        obj[key]++;
-    } else {
-        obj[key] = 1;
     }
-}
-
-function displayTopThree(losers, winners) {
-    const losersSorted = Object.entries(losers).sort((a, b) => b[1] - a[1]);
-    const winnersSorted = Object.entries(winners).sort((a, b) => b[1] - a[1]);
-
-    const topLosers = losersSorted.slice(0, 3);
-    const topWinners = winnersSorted.slice(0, 3);
-
-    console.log(`Top Losers: ${topLosers.map(l => `${l[0]}: ${l[1]}`).join(', ')}`);
-    console.log(`Top Winners: ${topWinners.map(w => `${w[0]}: ${w[1]}`).join(', ')}`);
-    alert(`Top Losers: ${topLosers.map(l => `${l[0]}: ${l[1]}`).join(', ')}`);
-    alert(`Top Winners: ${topWinners.map(w => `${w[0]}: ${w[1]}`).join(', ')}`);
-}
+});
