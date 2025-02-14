@@ -4,31 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baby Losers</title>
-    <!-- Ajoutez vos liens CSS ici -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="main-page">
-        <button id="create-account">Créer un compte</button>
+    <!-- Section de connexion et création de compte -->
+    <div id="login-section">
+        <h2>Connexion</h2>
         <form id="login-form">
-            <input type="email" id="login-email" placeholder="Email" required>
-            <input type="password" id="login-password" placeholder="Mot de passe" required>
+            <input type="text" id="pseudo" placeholder="Pseudo" required>
+            <input type="password" id="password" placeholder="Mot de passe" required>
             <button type="submit">Se connecter</button>
         </form>
-        <button id="new-loose-btn">New Lose</button>
+        <button id="create-account">Créer un compte</button>
     </div>
 
-    <div id="form-new-loose" style="display: none;">
-        <form id="loose-form">
-            <input type="date" id="date" required>
-            <input type="text" id="winner1" placeholder="Gagnant 1" required>
-            <input type="text" id="winner2" placeholder="Gagnant 2" required>
-            <input type="text" id="loser1" placeholder="Perdant 1" required>
-            <input type="text" id="loser2" placeholder="Perdant 2" required>
-            <button type="submit">Ajouter</button>
+    <!-- Section principale après connexion (initialement cachée) -->
+    <div id="main-section" style="display: none;">
+        <h2>Bienvenue, <span id="welcome-message"></span>!</h2>
+        <button id="new-lose">New Lose</button>
+        <button id="hall-of-lose">Hall of Lose</button>
+        <button id="stats-of-lose">Stats of Lose</button>
+        <button id="logout">Se déconnecter</button>
+    </div>
+
+    <!-- Formulaire New Lose (initialement caché) -->
+    <div id="new-lose-form" style="display: none;">
+        <h2>Nouvelle Perte</h2>
+        <form id="new-lose-data-form">
+            <input type="date" id="match-date" required>
+            <input type="text" id="winner1" placeholder="Winner1" required>
+            <input type="text" id="winner2" placeholder="Winner2" required>
+            <input type="text" id="loser1" placeholder="Loser1" required>
+            <input type="text" id="loser2" placeholder="Loser2" required>
+            <button type="submit">Sauvegarder</button>
         </form>
+        <button id="cancel-new-lose">Annuler</button>
     </div>
 
-    <!-- Ajoutez vos scripts JS ici -->
+    <!-- Scripts Firebase et votre code JS -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

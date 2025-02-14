@@ -10,13 +10,13 @@ const firebaseConfig = {
 };
 
 // Initialiser Firebase
-firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
 // Créer un compte avec pseudo, email et mot de passe
 document.getElementById('create-account').addEventListener('click', function() {
-    const pseudo = prompt("Entrez votre pseudo :");
+    const pseudo = document.getElementById('pseudo').value;
     const email = prompt("Entrez votre email :");
     const password = prompt("Entrez votre mot de passe :");
 
@@ -33,6 +33,9 @@ document.getElementById('create-account').addEventListener('click', function() {
                 .then(() => {
                     console.log("Compte créé avec succès avec pseudo !");
                     alert("Compte créé avec succès avec pseudo !");
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('main-section').style.display = 'block';
+                    document.getElementById('welcome-message').textContent = pseudo;
                 })
                 .catch((error) => {
                     console.error("Erreur lors de la sauvegarde du pseudo : ", error.message);
@@ -51,14 +54,17 @@ document.getElementById('create-account').addEventListener('click', function() {
 // Connexion avec pseudo
 document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
+    const pseudo = document.getElementById('pseudo').value;
+    const password = document.getElementById('password').value;
 
-    auth.signInWithEmailAndPassword(email, password)
+    auth.signInWithEmailAndPassword(pseudo, password)
         .then((userCredential) => {
             const user = userCredential.user;
             console.log("Connecté avec succès avec l'email :", user.email);
             alert("Connecté avec succès avec l'email : " + user.email);
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('main-section').style.display = 'block';
+            document.getElementById('welcome-message').textContent = pseudo;
         })
         .catch((error) => {
             console.error("Erreur lors de la connexion : ", error.message);
@@ -67,14 +73,19 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 });
 
 // Afficher le formulaire de nouvelle loose
-document.getElementById('new-loose-btn').addEventListener('click', function() {
-    document.getElementById('form-new-loose').style.display = 'block';
+document.getElementById('new-lose').addEventListener('click', function() {
+    document.getElementById('new-lose-form').style.display = 'block';
+});
+
+// Annuler le formulaire de nouvelle loose
+document.getElementById('cancel-new-lose').addEventListener('click', function() {
+    document.getElementById('new-lose-form').style.display = 'none';
 });
 
 // Soumettre le formulaire de nouvelle loose
-document.getElementById('loose-form').addEventListener('submit', function(event) {
+document.getElementById('new-lose-data-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    const date = document.getElementById('date').value;
+    const date = document.getElementById('match-date').value;
     const winner1 = document.getElementById('winner1').value;
     const winner2 = document.getElementById('winner2').value;
     const loser1 = document.getElementById('loser1').value;
@@ -90,9 +101,22 @@ document.getElementById('loose-form').addEventListener('submit', function(event)
     .then(() => {
         console.log("Nouvelle loose ajoutée avec succès !");
         alert("Nouvelle loose ajoutée avec succès !");
-        document.getElementById('form-new-loose').style.display = 'none'; // Masquer le formulaire
+        document.getElementById('new-lose-form').style.display = 'none';
     })
     .catch((error) => {
         console.error("Erreur lors de l'ajout de la nouvelle partie :", error.message);
+    });
+});
+
+// Déconnexion
+document.getElementById('logout').addEventListener('click', function() {
+    auth.signOut().then(() => {
+        console.log("Déconnecté avec succès");
+        alert("Déconnecté avec succès");
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('main-section').style.display = 'none';
+    }).catch((error) => {
+        console.error("Erreur lors de la déconnexion : ", error.message);
+        alert("Erreur lors de la déconnexion : " + error.message);
     });
 });
