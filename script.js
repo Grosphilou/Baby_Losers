@@ -232,7 +232,7 @@ function loadStats() {
             }
         });
 
-        let statsContent = `<p>Nombre total de parties : ${querySnapshot.size}</p><table><thead><tr><th>Pseudo</th><th>Wins</th><th>Loses</th><th>Mon pire winner</th><th>Brother de lose</th><th>Win %</th><th>Lose %</th></tr></thead><tbody>`;
+        let statsContent = `<p>Nombre total de parties : ${querySnapshot.size}</p><table><thead><tr><th>Pseudo</th><th>Wins</th><th>Loses</th><th>Brother de lose</th><th>il te veut du mal</th><th>Win %</th><th>Lose %</th></tr></thead><tbody>`;
         for (const [pseudo, data] of Object.entries(stats)) {
             const mostLostTo = Object.entries(losePartners[pseudo] || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
             const mostWonWith = Object.entries(winPartners[pseudo] || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
