@@ -259,6 +259,55 @@ document.getElementById('close-hall-of-lose').addEventListener('click', function
     document.getElementById('hall-of-lose-section').style.display = 'none';
 });
 
+// Afficher les erreurs dans la lose
+document.getElementById('error-in-lose').addEventListener('click', function() {
+    document.getElementById('error-in-lose-section').style.display = 'block';
+    loadErrors();
+});
+
+// Fermer les erreurs dans la lose
+document.getElementById('close-error-in-lose').addEventListener('click', function() {
+    document.getElementById('error-in-lose-section').style.display = 'none';
+});
+
+// Fonction pour charger les erreurs dans la lose
+function loadErrors() {
+    db.collection('looses').get().then((querySnapshot) => {
+        if (querySnapshot.empty) {
+            console.error("Aucune partie trouvée.");
+            document.getElementById('error-content').textContent = "Aucune partie trouvée.";
+            return;
+        }
+
+        let errorContent = '<table><thead><tr><th>Date</th><th>Winner1</th><th>Winner2</th><th>Loser1</th><th>Loser2</th><th>Actions</th></tr></thead><tbody>';
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            errorContent += `<tr><td>${data.date}</td><td>${data.winner1}</td><td>${data.winner2}</td><td>${data.loser1}</td><td>${data.loser2}</td><td><button class="btn" onclick="deleteMatch('${doc.id}')">Supprimer</button></td></tr>`;
+        });
+        errorContent += '</tbody></table>';
+
+        document.getElementById('error-content').innerHTML = errorContent;
+    }).catch((error) => {
+        console.error("Erreur lors de la récupération des erreurs : ", error.message);
+    });
+}
+
+// Fonction pour supprimer un match
+window.deleteMatch = function(matchId) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce match ?")) {
+        db.collection('looses').doc(matchId).delete()
+            .then(() => {
+                console.log("Match supprimé avec succès !");
+                alert("Match supprimé avec succès !");
+                loadErrors(); // Recharger les erreurs après suppression
+            })
+            .catch((error) => {
+                console.error("Erreur lors de la suppression du match : ", error.message);
+                alert("Erreur lors de la suppression du match : " + error.message);
+            });
+    }
+};
+
 // Fonction pour charger le podium
 function loadPodium() {
     const now = new Date();
