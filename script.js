@@ -282,13 +282,63 @@ function loadErrors() {
         let errorContent = '<table><thead><tr><th>Date</th><th>Winner1</th><th>Winner2</th><th>Loser1</th><th>Loser2</th><th>Actions</th></tr></thead><tbody>';
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            errorContent += `<tr><td>${data.date}</td><td>${data.winner1}</td><td>${data.winner2}</td><td>${data.loser1}</td><td>${data.loser2}</td><td><button class="btn" onclick="deleteMatch('${doc.id}')">Supprimer</button></td></tr>`;
+            errorContent += `<tr><td>${data.date}</td><td>${data.winner1}</td><td>${data.winner2}</td><td>${data.loser1}</td><td>${data.loser2}</td><td>
+                <button class="btn" onclick="editMatch('${doc.id}', '${data.date}', '${data.winner1}', '${data.winner2}', '${data.loser1}', '${data.loser2}')">Modifier</button>
+                <button class="btn" onclick="saveMatch('${doc.id}')">Sauvegarder</button>
+                <button class="btn" onclick="deleteMatch('${doc.id}')">Supprimer</button>
+            </td></tr>`;
         });
         errorContent += '</tbody></table>';
 
         document.getElementById('error-content').innerHTML = errorContent;
     }).catch((error) => {
         console.error("Erreur lors de la récupération des erreurs : ", error.message);
+    });
+}
+
+// Fonction pour modifier un match
+window.editMatch = function(matchId, date, winner1, winner2, loser1, loser2) {
+    const newDate = prompt("Entrez la nouvelle date :", date);
+    const newWinner1 = prompt("Entrez le nouveau Winner1 :", winner1);
+    const newWinner2 = prompt("Entrez le nouveau Winner2 :", winner2);
+    const newLoser1 = prompt("Entrez le nouveau Loser1 :", loser1);
+    const newLoser2 = prompt("Entrez le nouveau Loser2 :", loser2);
+
+    db.collection('looses').doc(matchId).update({
+        date: newDate,
+        winner1: newWinner1,
+        winner2: newWinner2,
+        loser1: newLoser1,
+        loser2: newLoser2
+    })
+    .then(() => {
+        console.log("Match modifié avec succès !");
+        alert("Match modifié avec succès !");
+        loadErrors(); // Recharger les erreurs après modification
+    })
+    .catch((error) => {
+        console.error("Erreur lors de la modification du match : ", error.message);
+        alert("Erreur lors de la modification du match : " + error.message);
+    });
+}
+
+// Fonction pour sauvegarder un match
+window.saveMatch = function(matchId) {
+    db.collection('looses').doc(matchId).set({
+        date: document.getElementById(`date-${matchId}`).value,
+        winner1: document.getElementById(`winner1-${matchId}`).value,
+        winner2: document.getElementById(`winner2-${matchId}`).value,
+        loser1: document.getElementById(`loser1-${matchId}`).value,
+        loser2: document.getElementById(`loser2-${matchId}`).value
+    }, { merge: true })
+    .then(() => {
+        console.log("Match sauvegardé avec succès !");
+        alert("Match sauvegardé avec succès !");
+        loadErrors(); // Recharger les erreurs après sauvegarde
+    })
+    .catch((error) => {
+        console.error("Erreur lors de la sauvegarde du match : ", error.message);
+        alert("Erreur lors de la sauvegarde du match : " + error.message);
     });
 }
 
@@ -306,7 +356,7 @@ window.deleteMatch = function(matchId) {
                 alert("Erreur lors de la suppression du match : " + error.message);
             });
     }
-};
+}
 
 // Fonction pour charger le podium
 function loadPodium() {
