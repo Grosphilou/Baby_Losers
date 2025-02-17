@@ -272,7 +272,7 @@ document.getElementById('close-error-in-lose').addEventListener('click', functio
 
 // Fonction pour charger les erreurs dans la lose
 function loadErrors() {
-    db.collection('looses').get().then((querySnapshot) => {
+    db.collection('looses').orderBy('date', 'desc').get().then((querySnapshot) => {
         if (querySnapshot.empty) {
             console.error("Aucune partie trouvée.");
             document.getElementById('error-content').textContent = "Aucune partie trouvée.";
