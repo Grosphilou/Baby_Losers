@@ -196,6 +196,9 @@ function loadStats() {
         }
 
         const stats = {};
+        const losePartners = {};
+        const winPartners = {};
+
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             if (!stats[data.winner1]) stats[data.winner1] = { wins: 0, loses: 0, total: 0 };
@@ -211,13 +214,31 @@ function loadStats() {
             stats[data.winner2].total += 1;
             stats[data.loser1].total += 1;
             stats[data.loser2].total += 1;
+
+            // Track lose partners
+            if (!losePartners[data.loser1]) losePartners[data.loser1] = {};
+            if (!losePartners[data.loser2]) losePartners[data.loser2] = {};
+            if (data.loser1 !== data.loser2) {
+                losePartners[data.loser1][data.loser2] = (losePartners[data.loser1][data.loser2] || 0) + 1;
+                losePartners[data.loser2][data.loser1] = (losePartners[data.loser2][data.loser1] || 0) + 1;
+            }
+
+            // Track win partners
+            if (!winPartners[data.winner1]) winPartners[data.winner1] = {};
+            if (!winPartners[data.winner2]) winPartners[data.winner2] = {};
+            if (data.winner1 !== data.winner2) {
+                winPartners[data.winner1][data.winner2] = (winPartners[data.winner1][data.winner2] || 0) + 1;
+                winPartners[data.winner2][data.winner1] = (winPartners[data.winner2][data.winner1] || 0) + 1;
+            }
         });
 
-        let statsContent = '<table><thead><tr><th>Pseudo</th><th>Wins</th><th>Loses</th><th>Most Lost To</th><th>Most Won Against</th><th>Win %</th><th>Lose %</th></tr></thead><tbody>';
+        let statsContent = `<p>Nombre total de parties : ${querySnapshot.size}</p><table><thead><tr><th>Pseudo</th><th>Wins</th><th>Loses</th><th>Mon pire winner</th><th>Brother de lose</th><th>Win %</th><th>Lose %</th></tr></thead><tbody>`;
         for (const [pseudo, data] of Object.entries(stats)) {
+            const mostLostTo = Object.entries(losePartners[pseudo] || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+            const mostWonWith = Object.entries(winPartners[pseudo] || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
             const winPercentage = ((data.wins / data.total) * 100).toFixed(2);
             const losePercentage = ((data.loses / data.total) * 100).toFixed(2);
-            statsContent += `<tr><td>${pseudo}</td><td>${data.wins}</td><td>${data.loses}</td><td>${data.mostLostTo || 'N/A'}</td><td>${data.mostWonAgainst || 'N/A'}</td><td>${winPercentage}%</td><td>${losePercentage}%</td></tr>`;
+            statsContent += `<tr><td>${pseudo}</td><td>${data.wins}</td><td>${data.loses}</td><td>${mostLostTo}</td><td>${mostWonWith}</td><td>${winPercentage}%</td><td>${losePercentage}%</td></tr>`;
         }
         statsContent += '</tbody></table>';
 
