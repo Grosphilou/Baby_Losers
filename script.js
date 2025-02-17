@@ -262,19 +262,16 @@ document.getElementById('close-hall-of-lose').addEventListener('click', function
 // Fonction pour charger le podium
 function loadPodium() {
     const now = new Date();
-    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(endOfWeek.getDate() + 6);
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    // Calculer le podium de la semaine
+    // Calculer le podium des 7 derniers jours
     db.collection('looses')
-        .where('timestamp', '>=', startOfWeek)
-        .where('timestamp', '<=', endOfWeek)
+        .where('timestamp', '>=', oneWeekAgo)
         .get()
         .then((querySnapshot) => {
             if (querySnapshot.empty) {
-                console.error("Aucune partie trouvée pour la semaine.");
-                document.getElementById('podium-weekly').textContent = "Aucune partie trouvée pour la semaine.";
+                console.error("Aucune partie trouvée pour les 7 derniers jours.");
+                document.getElementById('podium-weekly').textContent = "Aucune partie trouvée pour les 7 derniers jours.";
                 return;
             }
 
@@ -286,10 +283,10 @@ function loadPodium() {
             });
 
             const sortedLosers = Object.entries(loserCounts).sort((a, b) => b[1] - a[1]);
-            displayPodium(sortedLosers.slice(0, 3), 'podium-weekly', 'Podium de la semaine');
+            displayPodium(sortedLosers.slice(0, 3), 'podium-weekly', 'Podium des 7 derniers jours');
         })
         .catch((error) => {
-            console.error("Erreur lors de la récupération des données de la semaine : ", error.message);
+            console.error("Erreur lors de la récupération des données des 7 derniers jours : ", error.message);
         });
 
     // Calculer le podium de tous les temps
