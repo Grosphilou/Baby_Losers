@@ -243,29 +243,6 @@ function loadStats() {
         statsContent += '</tbody></table>';
 
         document.getElementById('stats-content').innerHTML = statsContent;
-
-        // Ajouter un graphique en camembert
-        const ctx = document.createElement('canvas').getContext('2d');
-        document.getElementById('stats-content').appendChild(ctx.canvas);
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Wins', 'Loses'],
-                datasets: [{
-                    label: 'Statistiques',
-                    data: [Object.values(stats).reduce((a, b) => a + b.wins, 0), Object.values(stats).reduce((a, b) => a + b.loses, 0)],
-                    backgroundColor: ['#4CAF50', '#f44336'],
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                }
-            },
-        });
     }).catch((error) => {
         console.error("Erreur lors de la récupération des statistiques : ", error.message);
     });
