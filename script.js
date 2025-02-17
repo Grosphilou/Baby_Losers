@@ -243,6 +243,29 @@ function loadStats() {
         statsContent += '</tbody></table>';
 
         document.getElementById('stats-content').innerHTML = statsContent;
+
+        // Ajouter un graphique en camembert
+        const ctx = document.createElement('canvas').getContext('2d');
+        document.getElementById('stats-content').appendChild(ctx.canvas);
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Wins', 'Loses'],
+                datasets: [{
+                    label: 'Statistiques',
+                    data: [Object.values(stats).reduce((a, b) => a + b.wins, 0), Object.values(stats).reduce((a, b) => a + b.loses, 0)],
+                    backgroundColor: ['#4CAF50', '#f44336'],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            },
+        });
     }).catch((error) => {
         console.error("Erreur lors de la récupération des statistiques : ", error.message);
     });
@@ -287,6 +310,30 @@ function loadPodium() {
 
             const sortedLosers = Object.entries(loserCounts).sort((a, b) => b[1] - a[1]);
             displayPodium(sortedLosers.slice(0, 3), 'podium-weekly', 'Podium de la semaine');
+
+            // Ajouter un graphique en barres pour le podium de la semaine
+            const ctxWeekly = document.createElement('canvas').getContext('2d');
+            document.getElementById('podium-weekly').appendChild(ctxWeekly.canvas);
+            new Chart(ctxWeekly, {
+                type: 'bar',
+                data: {
+                    labels: sortedLosers.map(loser => loser[0]),
+                    datasets: [{
+                        label: 'Pertes',
+                        data: sortedLosers.map(loser => loser[1]),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
         })
         .catch((error) => {
             console.error("Erreur lors de la récupération des données de la semaine : ", error.message);
@@ -309,6 +356,30 @@ function loadPodium() {
 
         const sortedLosers = Object.entries(loserCounts).sort((a, b) => b[1] - a[1]);
         displayPodium(sortedLosers.slice(0, 3), 'podium-all-time', 'Podium de tous les temps');
+
+        // Ajouter un graphique en barres pour le podium de tous les temps
+        const ctxAllTime = document.createElement('canvas').getContext('2d');
+        document.getElementById('podium-all-time').appendChild(ctxAllTime.canvas);
+        new Chart(ctxAllTime, {
+            type: 'bar',
+            data: {
+                labels: sortedLosers.map(loser => loser[0]),
+                datasets: [{
+                    label: 'Pertes',
+                    data: sortedLosers.map(loser => loser[1]),
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     }).catch((error) => {
         console.error("Erreur lors de la récupération des données de tous les temps : ", error.message);
     });

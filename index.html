@@ -7,72 +7,72 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Section de connexion et création de compte -->
-    <div id="login-section">
-        <h2>Connexion</h2>
-        <form id="login-form">
-            <input type="text" id="pseudo" placeholder="Pseudo" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Mot de passe" required>
-            <button type="submit">Se connecter</button>
-        </form>
-        <button id="create-account">Créer un compte</button>
-    </div>
+    <div class="background-image"></div>
+    <div class="container">
+        <!-- Section de connexion et création de compte -->
+        <div id="login-section">
+            <h2>Connexion</h2>
+            <form id="login-form">
+                <input type="text" id="pseudo" placeholder="Pseudo" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Mot de passe" required>
+                <button type="submit" class="btn">Se connecter</button>
+            </form>
+            <button id="create-account" class="btn">Créer un compte</button>
+        </div>
 
-    <!-- Section principale après connexion (initialement cachée) -->
-    <div id="main-section" style="display: none;">
-        <h2>Bienvenue, <span id="welcome-message"></span>!</h2>
-        <button id="new-lose">New Lose</button>
-        <button id="hall-of-lose">Hall of Lose</button>
-        <button id="stats-of-lose">Stats of Lose</button>
-        <button id="logout">Se déconnecter</button>
-    </div>
+        <!-- Section principale après connexion (initialement cachée) -->
+        <div id="main-section" style="display: none;">
+            <h2>Bienvenue, <span id="welcome-message"></span>!</h2>
+            <button id="new-lose" class="btn">New Lose</button>
+            <button id="hall-of-lose" class="btn">Hall of Lose</button>
+            <button id="stats-of-lose" class="btn">Stats of Lose</button>
+            <button id="logout" class="btn">Se déconnecter</button>
+        </div>
 
-    <!-- Formulaire New Lose (initialement caché) -->
-    <div id="new-lose-form" style="display: none;">
-        <h2>Nouvelle Perte</h2>
-        <form id="new-lose-data-form">
-            <input type="date" id="match-date" required>
-            <select id="winner1" required>
-                <option value="" disabled selected>Sélectionnez Winner1</option>
-                <!-- Options seront ajoutées dynamiquement ici -->
-            </select>
-            <select id="winner2" required>
-                <option value="" disabled selected>Sélectionnez Winner2</option>
-                <!-- Options seront ajoutées dynamiquement ici -->
-            </select>
-            <select id="loser1" required>
-                <option value="" disabled selected>Sélectionnez Loser1</option>
-                <!-- Options seront ajoutées dynamiquement ici -->
-            </select>
-            <select id="loser2" required>
-                <option value="" disabled selected>Sélectionnez Loser2</option>
-                <!-- Options seront ajoutées dynamiquement ici -->
-            </select>
-            <button type="submit">Sauvegarder</button>
-        </form>
-        <button id="cancel-new-lose">Annuler</button>
-    </div>
+        <!-- Formulaire New Lose (initialement caché) -->
+        <div id="new-lose-form" style="display: none;">
+            <h2>Nouvelle Perte</h2>
+            <form id="new-lose-data-form">
+                <input type="date" id="match-date" required>
+                <select id="winner1" required>
+                    <option value="" disabled selected>Sélectionnez Winner1</option>
+                </select>
+                <select id="winner2" required>
+                    <option value="" disabled selected>Sélectionnez Winner2</option>
+                </select>
+                <select id="loser1" required>
+                    <option value="" disabled selected>Sélectionnez Loser1</option>
+                </select>
+                <select id="loser2" required>
+                    <option value="" disabled selected>Sélectionnez Loser2</option>
+                </select>
+                <button type="submit" class="btn">Sauvegarder</button>
+            </form>
+            <button id="cancel-new-lose" class="btn">Annuler</button>
+        </div>
 
-    <!-- Section pour afficher les statistiques (initialement cachée) -->
-    <div id="stats-section" style="display: none;">
-        <h2>Statistiques</h2>
-        <div id="stats-content"></div>
-        <button id="close-stats">Fermer</button>
-    </div>
+        <!-- Section pour afficher les statistiques (initialement cachée) -->
+        <div id="stats-section" style="display: none;">
+            <h2>Statistiques</h2>
+            <div id="stats-content"></div>
+            <button id="close-stats" class="btn">Fermer</button>
+        </div>
 
-    <!-- Section pour afficher le Hall of Lose (initialement cachée) -->
-    <div id="hall-of-lose-section" style="display: none;">
-        <h2>Hall of Lose</h2>
-        <div id="podium-weekly"></div>
-        <div id="podium-all-time"></div>
-        <button id="close-hall-of-lose">Fermer</button>
+        <!-- Section pour afficher le Hall of Lose (initialement cachée) -->
+        <div id="hall-of-lose-section" style="display: none;">
+            <h2>Hall of Lose</h2>
+            <div id="podium-weekly"></div>
+            <div id="podium-all-time"></div>
+            <button id="close-hall-of-lose" class="btn">Fermer</button>
+        </div>
     </div>
 
     <!-- Scripts Firebase compatibles avec les navigateurs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
