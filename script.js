@@ -232,7 +232,7 @@ function loadStats() {
             }
         });
 
-        let statsContent = `<p>Nombre total de parties : ${querySnapshot.size}</p><table><thead><tr><th>Pseudo</th><th>Wins</th><th>Loses</th><th>Brother of lose</th><th>lui il m'en veut</th><th>Win %</th><th>Lose %</th></tr></thead><tbody>`;
+        let statsContent = `<p>Nombre total de parties : ${querySnapshot.size}</p><table><thead><tr><th>Pseudo</th><th>Wins</th><th>Loses</th><th>Mon pire winner</th><th>Brother de lose</th><th>Win %</th><th>Lose %</th></tr></thead><tbody>`;
         for (const [pseudo, data] of Object.entries(stats)) {
             const mostLostTo = Object.entries(losePartners[pseudo] || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
             const mostWonWith = Object.entries(winPartners[pseudo] || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
@@ -262,11 +262,14 @@ document.getElementById('close-hall-of-lose').addEventListener('click', function
 // Fonction pour charger le podium
 function loadPodium() {
     const now = new Date();
-    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(endOfWeek.getDate() + 6);
 
     // Calculer le podium de la semaine
     db.collection('looses')
-        .where('timestamp', '>=', oneWeekAgo)
+        .where('timestamp', '>=', startOfWeek)
+        .where('timestamp', '<=', endOfWeek)
         .get()
         .then((querySnapshot) => {
             if (querySnapshot.empty) {
